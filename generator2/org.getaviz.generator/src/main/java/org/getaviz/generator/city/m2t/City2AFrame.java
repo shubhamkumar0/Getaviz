@@ -80,59 +80,51 @@ public class City2AFrame {
 	private String toDistrict(Node district, Node position) {
 		Node entity = connector.getVisualizedEntity(district.id());
 		StringBuilder builder = new StringBuilder();
-		builder.append("<a-box id=\"" + entity.get("hash").asString() + "\"");
+		builder.append("<a-entity geometry=\"primitive:box; skipCache: true; buffer:true;" + " width:" + district.get("width") + ";" + " height:" +  district.get("height") + ";" + " depth:" +  district.get("length") + "\"");
+		builder.append("\n");
+		builder.append("id=\"" + entity.get("hash").asString() + "\"");
 		builder.append("\n");
 		builder.append("\t position=\"" + position.get("x") + " " + position.get("y") + " " + position.get("z") + "\"");
 		builder.append("\n");
-		builder.append("\t width=\"" + district.get("width") + "\"");
-		builder.append("\n");
-		builder.append("\t height=\"" + district.get("height") + "\"");
-		builder.append("\n");
-		builder.append("\t depth=\"" + district.get("length") + "\"");
-		builder.append("\n");
-		builder.append("\t color=\"" + district.get("color").asString() + "\"");
-		builder.append("\n");
 		builder.append("\t shader=\"flat\"");
 		builder.append("\n");
-		builder.append("\t flat-shading=\"true\">");
+		builder.append("\t flat-shading=\"true\"");
 		builder.append("\n");
-		builder.append("</a-box>");
+		builder.append("\t vertex-colors-buffer=\"" + "baseColor:" + district.get("color").asString() + "\"" + ">");
+		builder.append("\n");
+		builder.append("</a-entity>");
 		builder.append("\n");
 		return builder.toString();
 	}
-
+	
 	private String toBuilding(Node building, Node position) {
 		Node entity = connector.getVisualizedEntity(building.id());
 		StringBuilder builder = new StringBuilder();
-		builder.append("<a-box id=\"" + entity.get("hash").asString() + "\"");
+		builder.append("<a-entity geometry=\"primitive:box; skipCache: true; buffer:true;" + " width:" + building.get("width") + ";" + " height:" +  building.get("height") + ";" + " depth:" +  building.get("length") + "\"");
+		builder.append("\n");
+		builder.append("id=\"" + entity.get("hash").asString() + "\"");
 		builder.append(
 				"\t\t position=\"" + position.get("x") + " " + position.get("y") + " " + position.get("z") + "\"");
 		builder.append("\n");
-		builder.append("\t\t width=\"" + building.get("width") + "\"");
+		builder.append("\t shader=\"flat\"");
 		builder.append("\n");
-		builder.append("\t\t height=\"" + building.get("height") + "\"");
+		builder.append("\t flat-shading=\"true\"");
+		builder.append("\n");			
+		builder.append("\t\t vertex-colors-buffer=\"" + "baseColor:" + building.get("color").asString() + "\"" + ">");
 		builder.append("\n");
-		builder.append("\t\t depth=\"" + building.get("length") + "\"");
-		builder.append("\n");
-		builder.append("\t\t color=\"" + building.get("color").asString() + "\"");
-		builder.append("\n");
-		builder.append("\t\t shader=\"flat\"");
-		builder.append("\n");
-		builder.append("\t\t flat-shading=\"true\">");
-		builder.append("\n");
-		builder.append("</a-box>");
+		builder.append("</a-entity>");
 		builder.append("\n");
 		return builder.toString();
 	}
-
+	
 	private String buildPosition(Node position) {
 		return "\t position=\"" + position.get("x") + " " + position.get("y") + " " + position.get("z") + "\"";
 	}
-
+	
 	private String buildColor(Node segment) {
-		return "\t color=\"" + segment.get("color").asString() + "\"";
+		return "\t vertex-colors-buffer=\"" + "baseColor:" + segment.get("color").asString() + "\"";
 	}
-
+	
 	private String toBuildingSegment(Node segment, Node position) {
 		Node entity = connector.getVisualizedEntity(segment.id());
 		List<Node> separators = new ArrayList<>();
@@ -145,15 +137,51 @@ public class City2AFrame {
 		StringBuilder builder = new StringBuilder();
 		if (config.getBuildingType() == BuildingType.CITY_PANELS && entity.hasLabel(Labels.Field.name())
 				&& config.isShowAttributesAsCylinders()) {
-			builder.append("<a-cylinder id=\"" + entity.get("hash").asString() + "\"");
+			builder.append("<a-entity geometry=\"primitive:cylinder; skipCache: true; buffer:true;" + " radius:" + width/2 + ";" + " height:" +  "\"");
+			builder.append("\n");
+			builder.append("id=\"" + entity.get("hash").asString() + "\"");
 			builder.append("\n");
 			builder.append(buildPosition(position));
 			builder.append("\n");
-			builder.append("\t radius=\"" + width / 2 + "\"");
+			builder.append("\t vertex-colors-buffer=\"" + "baseColor:" + segment.get("color").asString() + "\"");
 			builder.append("\n");
-			builder.append("\t height=\"" + "\" ");
+			builder.append("\t shader=\"flat\"");
 			builder.append("\n");
-			builder.append("\t color=\"" + segment.get("color").asString() + "\"");
+			builder.append("\t flat-shading=\"true\"");
+			builder.append("\n");
+			builder.append("\t segments-height=\"2\"");
+			builder.append("\n");
+			builder.append("\t segments-radial=\"20\">" );
+			builder.append("\n");
+			builder.append("</a-entity>");
+			builder.append("\n");
+		} else {
+			builder.append("<a-entity geometry=\"primitive:box; skipCache: true; buffer:true;" + " width:" + width + ";" + " height:" +  height + ";" + " depth:" +  length + "\"");
+			builder.append("\n");
+			builder.append("id=\"" + entity.get("hash").asString() + "\"");
+			builder.append("\n");
+			builder.append(buildPosition(position));
+			builder.append("\n");
+			builder.append("\t shader=\"flat\"");
+			builder.append("\n");
+			builder.append("\t flat-shading=\"true\"");
+			builder.append("\n");
+			builder.append(buildColor(segment)  + ">");
+			builder.append("\n");
+			builder.append("</a-entity>");
+			builder.append("\n");
+		}
+		for (final Node separator : separators) {
+			final Node pos = connector.getPosition(separator.id());
+			builder.append("\n");
+			if (separator.hasLabel(Labels.Cylinder.name())) {
+			builder.append("<a-entity geometry=\"primitive:cylinder; skipCache: true; buffer:true;" + " radius:" + separator.get("radius") + ";" + " height:" +config.getPanelSeparatorHeight() + "\"");
+			builder.append("\n");
+			builder.append("id=\"" + entity.get("hash").asString() + "\"");
+			builder.append("\n");
+			builder.append(buildPosition(pos));
+			builder.append("\n");
+			builder.append("\t vertex-colors-buffer=\"" + "baseColor:" + config.getCityColorHex("black") + "\"");
 			builder.append("\n");
 			builder.append("\t shader=\"flat\"");
 			builder.append("\n");
@@ -163,120 +191,64 @@ public class City2AFrame {
 			builder.append("\n");
 			builder.append("\t segments-radial=\"20\">");
 			builder.append("\n");
-			builder.append("</a-cylinder>");
+			builder.append("</a-entity>");
 			builder.append("\n");
-		} else {
-			builder.append("<a-box id=\"" + entity.get("hash").asString() + "\"");
+			} else {
+			builder.append("<a-entity geometry=\"primitive:box; skipCache: true; buffer:true;" + " width:" + separator.get("width") + ";" + " height:" +  config.getPanelSeparatorHeight() + ";" + " depth:" +  separator.get("length") + "\"");
 			builder.append("\n");
-			builder.append(buildPosition(position));
+			builder.append("id=\"" + entity.get("hash").asString() + "\"");
 			builder.append("\n");
-			builder.append("\t width=\"" + width + "\"");
-			builder.append("\n");
-			builder.append("\t height=\"" + height + "\"");
-			builder.append("\n");
-			builder.append("\t depth=\"" + length + "\"");
-			builder.append("\n");
-			builder.append(buildColor(segment));
+			builder.append(buildPosition(pos));
 			builder.append("\n");
 			builder.append("\t shader=\"flat\"");
 			builder.append("\n");
-			builder.append("\t flat-shading=\"true\">");
+			builder.append("\t flat-shading=\"true\"");
 			builder.append("\n");
-			builder.append("</a-box>");
+			builder.append("\t vertex-colors-buffer=\"" + "baseColor:" + config.getCityColorHex("black") + "\"" + ">");
 			builder.append("\n");
-		}
-		for (final Node separator : separators) {
-			final Node pos = connector.getPosition(separator.id());
+			builder.append("</a-entity>");
 			builder.append("\n");
-			if (separator.hasLabel(Labels.Cylinder.name())) {
-				builder.append("<a-cylinder  id=\"" + entity.get("hash").asString() + "\"");
-				builder.append("\n");
-				builder.append(buildPosition(pos));
-				builder.append("\n");
-				builder.append("\t radius=\"" + separator.get("radius") + "\" ");
-				builder.append("\n");
-				builder.append("\t height=\"" + config.getPanelSeparatorHeight() + "\" ");
-				builder.append("\n");
-				builder.append("\t color=\"" + config.getCityColorHex("black") + "\"");
-				builder.append("\n");
-				builder.append("\t shader=\"flat\"");
-				builder.append("\n");
-				builder.append("\t flat-shading=\"true\"");
-				builder.append("\n");
-				builder.append("\t segments-height=\"2\"");
-				builder.append("\n");
-				builder.append("\t segments-radial=\"20\">");
-				builder.append("\n");
-				builder.append("</a-cylinder>");
-				builder.append("\n");
-			} else {
-				builder.append("<a-box id=\"" + entity.get("hash").asString() + "\"");
-				builder.append("\n");
-				builder.append(buildPosition(pos));
-				builder.append("\n");
-				builder.append("\t width=\"" + separator.get("width") + "\"");
-				builder.append("\n");
-				builder.append("\t height=\"" + config.getPanelSeparatorHeight() + "\"");
-				builder.append("\n");
-				builder.append("\t depth=\"" + separator.get("length") + "\"");
-				builder.append("\n");
-				builder.append("\t color=\"" + config.getCityColorHex("black") + "\"");
-				builder.append("\n");
-				builder.append("\t shader=\"flat\"");
-				builder.append("\n");
-				builder.append("\t flat-shading=\"true\">");
-				builder.append("\n");
-				builder.append("</a-box>");
-				builder.append("\n");
 			}
 		}
 		return builder.toString();
 	}
-
+	
 	private String toFloor(Node floor, Node position) {
 		Node entity = connector.getVisualizedEntity(floor.id());
 		StringBuilder builder = new StringBuilder();
-		builder.append("<a-box id=\"" + entity.get("hash").asString() + "\"");
+		builder.append("<a-entity geometry=\"primitive:box; skipCache: true; buffer:true;" + " width:" + floor.get("width") + ";" + " height:" +  floor.get("height") + ";" + " depth:" +  floor.get("length") + "\"");
+		builder.append("\n");
+		builder.append("id=\"" + entity.get("hash").asString() + "\"");
 		builder.append("\n");
 		builder.append(buildPosition(position));
 		builder.append("\n");
-		builder.append("\t width=\"" + floor.get("width") + "\"");
-		builder.append("\n");
-		builder.append("\t height=\"" + floor.get("height") + "\"");
-		builder.append("\n");
-		builder.append("\t depth=\"" + floor.get("length") + "\"");
-		builder.append("\n");
-		builder.append("\t color=\"" + floor.get("color").asString() + "\"");
-		builder.append("\n");
 		builder.append("\t shader=\"flat\"");
 		builder.append("\n");
-		builder.append("\t flat-shading=\"true\">");
+		builder.append("\t flat-shading=\"true\"");
 		builder.append("\n");
-		builder.append("</a-box>");
+		builder.append("\t vertex-colors-buffer=\"" + "baseColor:" + floor.get("color").asString() + "\"" + ">");
+		builder.append("\n");
+		builder.append("</a-entity>");
 		builder.append("\n");
 		return builder.toString();
 	}
-
+	
 	private String toChimney(Node chimney, Node position) {
 		Node entity = connector.getVisualizedEntity(chimney.id());		
 		StringBuilder builder = new StringBuilder();
-	    builder.append("<a-box id=\"" + entity.get("hash").asString() + "\"");
+		builder.append("<a-entity geometry=\"primitive:box; skipCache: true; buffer:true;" + " width:" + chimney.get("width") + ";" + " height:" +  chimney.get("height") + ";" + " depth:" +  chimney.get("length") + "\"");
+		builder.append("\n");
+	    builder.append("id=\"" + entity.get("hash").asString() + "\"");
 	    builder.append("\n");
 	    builder.append(buildPosition(position));
 	    builder.append("\n");
-	    builder.append("\t width=\"" + chimney.get("width") + "\"");
-	    builder.append("\n");
-	    builder.append("\t height=\"" + chimney.get("height") + "\"");
-	    builder.append("\n");
-	    builder.append("\t depth=\"" + chimney.get("length") + "\"");
-	    builder.append("\n");
-	    builder.append("\t color=\"" + chimney.get("color").asString() + "\"");
-	    builder.append("\n");
 	    builder.append("\t shader=\"flat\"");
+		builder.append("\n");
+		builder.append("\t flat-shading=\"true\"");
+		builder.append("\n");
+		builder.append("\t vertex-colors-buffer=\"" + "baseColor:" + chimney.get("color").asString() + "\"" + ">");
 	    builder.append("\n");
-	    builder.append("\t flat-shading=\"true\">");
-	    builder.append("\n");
-	    builder.append("</a-box>");
+	    builder.append("</a-entity>");
 	    builder.append("\n");
 	    return builder.toString();
 	}
