@@ -56,19 +56,17 @@ public class RD2AFrame {
 				});
 		StringBuilder builder = new StringBuilder();
 		if (radius - config.getRDRingWidth() == 0) {
-			builder.append("<a-circle id=\"" + entity.get("hash").asString() + "\" ");
+			builder.append("<a-entity geometry=\"primitive:circle; skipCache: true; buffer:true;" + " radius:" + radius + "\"");
+			builder.append("\n");
+			builder.append("id=\"" + entity.get("hash").asString() + "\" ");
 			builder.append("\n");
 			builder.append("\t position=\"" + position.get("x") + " ");
 			builder.append(position.get("y") + " ");
 			builder.append(position.get("z") + "\"");
 			builder.append("\n");
-			builder.append("\t radius=\"" + radius + "\" ");
-			builder.append("\n");
-			builder.append("\t color=\"" + disk.get("color").asString() + "\"");
+			builder.append("\t vertex-colors-buffer=\"" + "baseColor:" + disk.get("color").asString() + "\"");
 			builder.append("\n");
 			builder.append("\t shader=\"flat\"");
-			builder.append("\n");
-			builder.append("\t buffer=\"true\"");
 			builder.append("\n");
 			builder.append("\t flat-shading=\"true\"");
 			builder.append("\n");
@@ -78,24 +76,20 @@ public class RD2AFrame {
 			builder.append("\n");
 			builder.append("\t" + toSegment(segments));
 			builder.append("\n");
-			builder.append("</a-circle>");
+			builder.append("</a-entity>");
 			builder.append("\n");
 		} else {
-			builder.append("<a-ring id=\"" + entity.get("hash").asString() + "\"");
+			builder.append("<a-entity geometry=\"primitive:ring; skipCache: true; buffer:true;" + " radius-inner:" + (radius - config.getRDRingWidth()) + ";"+ " radius-outer:" + radius + "\"");
+			builder.append("\n");
+			builder.append("id=\"" + entity.get("hash").asString() + "\"");
 			builder.append("\n");
 			builder.append("\t position=\"" + position.get("x") + " ");
 			builder.append(position.get("y") + " ");
 			builder.append(position.get("z") + "\"");
 			builder.append("\n");
-			builder.append("\t radius-inner=\"" + (radius - config.getRDRingWidth()) + "\"");
-			builder.append("\n");
-			builder.append("\t radius-outer=\"" + radius + "\" ");
-			builder.append("\n");
-			builder.append("\t color=\"" + disk.get("color").asString() + "\"");
+			builder.append("\t vertex-colors-buffer=\"" + "baseColor:" + disk.get("color").asString() + "\"");
 			builder.append("\n");
 			builder.append("\t shader=\"flat\"");
-			builder.append("\n");
-			builder.append("\t buffer=\"true\"");
 			builder.append("\n");
 			builder.append("\t flat-shading=\"true\"");
 			builder.append("\n");
@@ -107,22 +101,22 @@ public class RD2AFrame {
 			builder.append("\n");
 			builder.append("\t" + toSegment(segments));
 			builder.append("\n");
-			builder.append("</a-ring>");
+			builder.append("</a-entity>");
 			builder.append("\n");
 		}
 		return builder.toString();
 	}
-
+	
 	private String toSegment(List<Node> segments) {
 		StringBuilder builder = new StringBuilder();
 		for (final Node segment : segments) {
 			Node entity = connector.getVisualizedEntity(segment.id());
 			if (segment.get("innerRadius").asDouble() == 0) {
-				builder.append("<a-circle id=\"" + entity.get("hash").asString() + "\"");
+				builder.append("<a-entity geometry=\"primitive:circle; skipCache: true; buffer:true;" + " radius:" + segment.get("outerRadius") + "\"");
 				builder.append("\n");
-				builder.append("\t radius=\"" + segment.get("outerRadius") + "\" ");
+				builder.append("id=\"" + entity.get("hash").asString() + "\"");
 				builder.append("\n");
-				builder.append("\t color=\"" + segment.get("color").asString() + "\"");
+				builder.append("\t vertex-colors-buffer=\"" + "baseColor:" + segment.get("color").asString() + "\"");
 				builder.append("\n");
 				builder.append("\t theta-start=\"" + segment.get("anglePosition") + "\"");
 				builder.append("\n");
@@ -130,28 +124,22 @@ public class RD2AFrame {
 				builder.append("\n");
 				builder.append("\t shader=\"flat\"");
 				builder.append("\n");
-				builder.append("\t buffer=\"true\"");
-				builder.append("\n");
 				builder.append("\t flat-shading=\"true\"");
 				builder.append("\n");
 				builder.append("\t depth-test=\"false\"");
 				builder.append("\n");
 				builder.append("\t depth-write=\"false\">");
 				builder.append("\n");
-				builder.append("</a-circle>");
+				builder.append("</a-entity>");
 				builder.append("\n");
 			} else {
-				builder.append("<a-ring id=\"" + entity.get("hash").asString() + "\"");
+				builder.append("<a-entity geometry=\"primitive:ring; skipCache: true; buffer:true;" + " radius-inner:" + segment.get("innerRadius") + ";" + " radius-outer:" + segment.get("outerRadius") +"\"");
 				builder.append("\n");
-				builder.append("\t radius-inner=\"" + segment.get("innerRadius") + "\"");
+				builder.append("id=\"" + entity.get("hash").asString() + "\"");
 				builder.append("\n");
-				builder.append("\t radius-outer=\"" + segment.get("outerRadius") + "\" ");
-				builder.append("\n");
-				builder.append("\t color=\"" + segment.get("color").asString() + "\"");
+				builder.append("\t vertex-colors-buffer=\"" + "baseColor:" + segment.get("color").asString() + "\"");
 				builder.append("\n");
 				builder.append("\t shader=\"flat\"");
-				builder.append("\n");
-				builder.append("\t buffer=\"true\"");
 				builder.append("\n");
 				builder.append("\t flat-shading=\"true\"");
 				builder.append("\n");
@@ -165,7 +153,7 @@ public class RD2AFrame {
 				builder.append("\n");
 				builder.append("\t segments-phi=\"1\">");
 				builder.append("\n");
-				builder.append("</a-ring>");
+				builder.append("</a-entity>");
 				builder.append("\n");
 			}
 		}
