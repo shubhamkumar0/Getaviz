@@ -15,6 +15,8 @@ public class RD2AFrame {
 	private SettingsConfiguration config = SettingsConfiguration.getInstance();
 	private DatabaseConnector connector = DatabaseConnector.getInstance();
 	private Log log = LogFactory.getLog(this.getClass());
+	private int i=0;//to count entities
+	private int j=0;//to group entities
 
 	public RD2AFrame() {
 		log.info("RD2AFrame has started");
@@ -41,8 +43,34 @@ public class RD2AFrame {
 		connector.executeRead(
 				"MATCH (element)<-[:VISUALIZES]-(d:Disk)-[:HAS]->(p:Position) RETURN d,p, element.hash ORDER BY element.hash")
 				.forEachRemaining((result) -> {
+					i++;
+					});
+		if(i>300) {
+		int n = i/200;
+		connector.executeRead(
+				"MATCH (element)<-[:VISUALIZES]-(d:Disk)-[:HAS]->(p:Position) RETURN d,p, element.hash ORDER BY element.hash")
+				.forEachRemaining((result) -> {
+					j++;
+					if(j == n){
+						StringBuilder builder = new StringBuilder();
+						builder.append("</a-entity>");
+						builder.append("\n");
+						builder.append("<a-entity buffer-geometry-merger material=\"vertexColors: vertex\">");
+						builder.append("\n");
+						elements.append(builder.toString());
+						j = 0;
+					}
 					elements.append(toDisk(result.get("d").asNode(), result.get("p").asNode()));
 				});
+			}
+		else {
+	connector.executeRead(
+				"MATCH (element)<-[:VISUALIZES]-(d:Disk)-[:HAS]->(p:Position) RETURN d,p, element.hash ORDER BY element.hash")
+				.forEachRemaining((result) -> {
+					elements.append(toDisk(result.get("d").asNode(), result.get("p").asNode()));
+				});
+		
+		}
 		return elements.toString();
 	}
 
