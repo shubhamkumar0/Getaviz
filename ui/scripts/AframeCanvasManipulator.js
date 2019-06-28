@@ -44,8 +44,8 @@ var canvasManipulator = (function () {
             if (entity.originalTransparency === undefined) {
                 entity.originalTransparency = {};
                 entity.currentTransparency = {};
-                if(component.getAttribute("material").opacity) {
-                    entity.originalTransparency = 1 - component.getAttribute("material").opacity;
+                if(component.getAttribute("opacity")) {
+                    entity.originalTransparency = 1 - component.getAttribute("opacity");
                 }
             }
             entity.currentTransparency = value;
@@ -147,8 +147,8 @@ var canvasManipulator = (function () {
                 // in case "material".opacity is undefined originalTransparency gets set to 0 which would be the default value anyways
                 entity.originalTransparency = {};
                 entity.currentTransparency = {};
-                if(component.getAttribute("material").opacity) {
-                    entity.originalTransparency = 1 - component.getAttribute("material").opacity;
+                if(component.getAttribute("opacity")) {
+                    entity.originalTransparency = 1 - component.getAttribute("opacity");
                 } else entity.originalTransparency = 0;
                 entity.currentTransparency = entity.originalTransparency;
             }
@@ -202,9 +202,7 @@ var canvasManipulator = (function () {
     }
 
     function setTransparency(object, value) {
-        object.setAttribute('material', {
-            opacity: 1 - value
-        });
+        object.setAttribute("opacity", 1 - value);
     }
 
 
