@@ -85,6 +85,21 @@ public class RDBankTest {
 		assertEquals(-8, y);
 		assertEquals(0, z);
 	}
+	
+	@Test
+	void layoutAlgorithmClass2() {
+		String hash = "ID_bdd240c8fe7174e6ac1cfdd5282de76eb7ad6815";
+		Record result = connector.executeRead(
+				"MATCH (:Package {hash: '" + hash + "'})<-[:VISUALIZES]-(:Disk)-[:HAS]->(position:Position) "
+						+ "RETURN position.x as x, position.y as y, position.z as z")
+				.single();
+		double x = result.get("x").asDouble();
+		double y = result.get("y").asDouble();
+		double z = result.get("z").asDouble();
+		assertEquals(0, x);
+		assertEquals(0, y);
+		assertEquals(0, z);
+	}
 
 	@Test
 	void methodSorting() {
@@ -93,5 +108,33 @@ public class RDBankTest {
 				+ "'}) RETURN segment.anglePosition as anglePosition").single();
 		double anglePosition = result.get("anglePosition").asDouble();
 		assertEquals(180.00552486187846, anglePosition);
+	}
+	
+	@Test
+	void methodSorting1() {
+		String hash = "ID_052028080c3d64381f56397d59113102bf4e5921";
+		Record result = connector.executeRead("MATCH (:Package {hash: '" + hash + "'})<-[:VISUALIZES]-(:Disk)-[:HAS]->(position:Position) "
+						+ "RETURN position.x as x, position.y as y, position.z as z").single();
+		// double anglePosition = result.get("anglePosition").asDouble();
+		// assertEquals(180.00552486187846, anglePosition);
+		double x = result.get("x").asDouble();
+		double y = result.get("y").asDouble();
+		double z = result.get("z").asDouble();
+		assertEquals(0, x);
+		assertEquals(11.046265, y);
+		assertEquals(0, z);
+	}
+
+	@Test
+	void layoutAlgorithmPackage1() {
+		String hash = "ID_9fa088272bab165867bfaddcfbf58d6a7d5d45a2";
+		Record result = connector.executeRead("MATCH (:Method {hash: '" + hash	+ "'})<-[:VISUALIZES]-(segment:DiskSegment)-[:HAS]->(position:Position)"
+					 + "RETURN position.x as x, position.y as y, position.z as z").single();
+		double x = result.get("x").asDouble();
+		double y = result.get("y").asDouble();
+		double z = result.get("z").asDouble();
+		assertEquals(0, x);
+		assertEquals(1.046265, y);
+		assertEquals(0, z);
 	}
 }
