@@ -100,12 +100,34 @@ var canvasManipulator = (function () {
     }
 
     function setColor(object, color) {
+        var colors = {
+        darkred: "darkred",
+        red: "red",
+        black: "black",
+        orange: "orange",
+        darkorange: "darkorange"
+        };
         color == colors.darkred ? color = colors.red : color = color;
         let colorValues = color.split(" ");
-        if (colorValues.length == 3) {
-            color = "#" + parseInt(colorValues[0]).toString(16) + "" + parseInt(colorValues[1]).toString(16) + "" + parseInt(colorValues[2]).toString(16);
-        }
-        object.setAttribute("color", color);
+        var colorHelper = new THREE.Color();
+        colorHelper.set(color);
+        var r;
+        var g;
+        var b;
+        r = parseInt(colorHelper.r*255).toString(16);
+        g = parseInt(colorHelper.g*255).toString(16);
+        b = parseInt(colorHelper.b*255).toString(16);
+        if (r.length == 1)
+            r = "0" + r;
+        if (g.length == 1)
+            g = "0" + g;
+        if (b.length == 1)
+            b = "0" + b;
+
+        var ans = "#" + r + g + b;
+        object.setAttribute('vertex-colors-buffer', {
+            baseColor: ans
+        });             
     }
 
     function hideEntities(entities) {
