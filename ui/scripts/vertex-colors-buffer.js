@@ -42,7 +42,7 @@ AFRAME.registerComponent('vertex-colors-buffer', {
       );
     }
 
-    colors = geometry.attributes.color.array;
+    colors = new Float32Array((geometry.attributes.position.array.length), 3);
 
     // TODO: For some reason, incrementing loop by 3 doesn't work. Need to do by 4 for glTF.
     colorHelper.set(data.baseColor);
@@ -53,5 +53,6 @@ AFRAME.registerComponent('vertex-colors-buffer', {
     }
 
     geometry.attributes.color.needsUpdate = true;
+    geometry.attributes.color.array = colors;
   }
 });
